@@ -1,0 +1,17 @@
+TODO: 
+* make this a real app
+* docs
+* testing
+* make the different bots plugins
+
+HOW TO USE:
+* In the shell, run "python bot.py <server[:port]> <channel> <bot nick> [if using link log: True]
+* To use the link log, your last arg should be "True"
+* To use Puppy Bot you need a Flickr API key.
+
+REQUIREMENTS:
+* python-requests
+* python flickr
+* python irc 
+* flickr API key (store in secret_settings.py)
+* empty text file to begin, called 'links_in_channel.txt'
