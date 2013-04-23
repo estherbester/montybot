@@ -19,7 +19,7 @@ def detect_hyperlinks(irc_message):
     """
     # a dirty simple regex from django linkify filter
     regex = re.compile(r'(([a-zA-Z]+)://[^ \t\n\r]+)', re.MULTILINE)
-    message_text = irc_message.arguments[0].split(":", 1)[1]
+    message_text = irc_message.arguments[0]
     matches = regex.findall(message_text)
     return check_hyperlinks(matches, irc_message.source.nick)
 
@@ -82,5 +82,14 @@ class Link(object):
 
 
 if __name__ == "__main__":
-    link = Link('http://esthernam.com/', 'estherbester')
-    print link.check()
+    #link = Link('http://esthernam.com/', 'estherbester')
+
+    class MockMessage(object):
+        class Source(object):
+            nick = "MockSource"
+
+        source = Source()
+        arguments = ['Test message with hyperlink like http://nytimes.com', ]
+
+    mock_message = MockMessage()
+    print detect_hyperlinks(mock_message)

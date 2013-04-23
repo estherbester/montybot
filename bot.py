@@ -31,6 +31,8 @@ class MontyBot(irc.bot.SingleServerIRCBot):
 
     def on_pubmsg(self, c, e):
         msg = e.arguments[0]
+        # to help us see if message begins with a nick (which would be a[0])
+        # a[1] would be the rest of the message
         a = msg.split(":", 1)
         if len(a) > 1:
             if self.is_myself(a[0]):
