@@ -7,12 +7,17 @@ TODO:
 HOW TO USE:
 * In the shell, run:
 : $ "python bot.py <server[:port]> <channel> <bot nick> [if using link log: True]
-* To use the link log, your last arg should be "True"
+* If you want to use the link log, your last arg should be "True"
 * To use Puppy Bot you need a Flickr API key. Currently the group used is corgis but you can change that, obviously (though why would you want to?)
 
 REQUIREMENTS:
-* python-requests [python-requests.org]
-* flickrpy [https://code.google.com/p/flickrpy/]
 * python irclib [https://bitbucket.org/jaraco/irc]
+
+For PuppyBot:
+* flickrpy (included here as flickr.py; source https://code.google.com/p/flickrpy/)
 * flickr API key (store in secret_settings.py as API_KEY and API_SECRET)
-* If using the link log, create an empty text file, called 'links_in_channel.txt', in the same directory as the app.
+
+For Link log:
+* python-requests [python-requests.org]
+* BeautifulSoup
+* Create an empty text file, called 'links_in_channel.txt', in the same directory as the app.

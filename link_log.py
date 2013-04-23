@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# stole from jsla bot the regex to find a url: /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/i,
+# idea for this stolen from jslabot
 
-# record links posted in the channel
+# records links posted in the channel
 
 import re
 import requests
@@ -15,7 +15,7 @@ LINK_LOG_FILE = 'links_in_channel.txt'
 
 def detect_hyperlinks(irc_message):
     """
-    Returns any found, working hyperlinks
+    Returns any found, working hyperlinks in an irc message
     """
     # a dirty simple regex from django linkify filter
     regex = re.compile(r'(([a-zA-Z]+)://[^ \t\n\r]+)', re.MULTILINE)
@@ -25,6 +25,10 @@ def detect_hyperlinks(irc_message):
 
 
 def check_hyperlinks(matches, source):
+    """
+    Given a list of links, checks to see if the link works. Returns
+    a list of metadata strings, one for each link.
+    """
     found_link = None
     links_to_post = []
     try:
@@ -42,6 +46,9 @@ def check_hyperlinks(matches, source):
 
 class Link(object):
     def __init__(self, url, user):
+        """
+        We have a url, the user who posted the url, and the time we look up the url
+        """
         self.url = url
         self.user = user
         self.timestamp = datetime.strftime(datetime.now(), '%h %d %X')
@@ -51,18 +58,23 @@ class Link(object):
             # should record time link was posted but whatever.
             link_log.write("\r%s" % line)
 
+    def get_page_title(self, page_content):
+        """Given a link, scrape the title"""
+        soup = BeautifulSoup(page_content)
+        return soup.find('title').text.encode('ascii', 'replace')
+
     def check(self):
+        note = "[no content]"
         try:
             site = requests.get(self.url)
             if site.status_code == 200:
-                soup = BeautifulSoup(site.content)
-                note = soup.find('title').text.encode('ascii', 'replace')
+                note = self.get_page_title(site.content)
             else:
                 note = "[link failed]"
         except requests.exceptions.RequestException:
             note = "[link failed]"
         except AttributeError:
-            note = "[no content]"
+            pass
         finally:
             line = u"%s (%s): %s | %s" % (self.user, self.timestamp, self.url, note)
             self.log(line)
@@ -70,5 +82,5 @@ class Link(object):
 
 
 if __name__ == "__main__":
-    link = Link('http://github.com', 'estherbester')
+    link = Link('http://esthernam.com/', 'estherbester')
     print link.check()
