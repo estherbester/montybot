@@ -41,7 +41,6 @@ class MontyBot(irc.bot.SingleServerIRCBot):
                     # check for links
                     working_links = detect_hyperlinks(e)
                     for link_data in working_links:
-                        print link_data
                         self.post_link(c, link_data)
         return
 
