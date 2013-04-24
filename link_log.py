@@ -68,10 +68,13 @@ class Link(object):
         try:
             site = requests.get(self.url)
             if site.status_code == 200:
-                note = self.get_page_title(site.content)
+		if site.headers['content-type'].startswith('image'):
+			note = '[image]'
+		else:
+			note = self.get_page_title(site.content)
             else:
-                note = "[link failed]"
-        except requests.exceptions.RequestException:
+        	raise requests.exceptions.RequestException("Fetch not successful")
+	except requests.exceptions.RequestException:
             note = "[link failed]"
         except AttributeError:
             pass
@@ -89,7 +92,7 @@ if __name__ == "__main__":
             nick = "MockSource"
 
         source = Source()
-        arguments = ['Test message with hyperlink like http://nytimes.com', ]
+        arguments = ['Test message with hyperlink like http://1.bp.blogspot.com/_OYjskRx08bY/SQcsZcVmI6I/AAAAAAAACtQ/dZhWPhgrLs8/s1600/PhoebeandLaura.jpg',] 
 
     mock_message = MockMessage()
     print detect_hyperlinks(mock_message)
