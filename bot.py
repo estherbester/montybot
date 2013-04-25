@@ -73,7 +73,7 @@ class MontyBot(irc.bot.SingleServerIRCBot):
             self.disconnect()
         elif cmd == 'go away':
             self.die()
-        elif 'puppy time' in cmd:
+        elif 'puppy time' in cmd.lower():
             puppy_url = get_puppy()
             c.privmsg(self.channel, "Puppy time! " + puppy_url)
         elif cmd == 'dcc':
