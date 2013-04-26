@@ -1,0 +1,4 @@
+montybot
+irc==8.2
+BeautifulSoup==3.2.1
+requests==0.12.0
