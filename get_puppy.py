@@ -8,17 +8,18 @@ flickr.API_KEY = API_KEY
 flickr.API_SECRET = API_SECRET
 
 # Need the NSID of whatever group you're pulling from
-CORGI_GROUP = '42653350@N00'
+FLICKR_GROUP = '42653350@N00' # corgi
+#FLICKR_GROUP = '57017533@N00'  # pug
 
 
 def get_puppy():
-        group = flickr.Group(CORGI_GROUP)
+        group = flickr.Group(FLICKR_GROUP)
         photos = None
         counter = 1
         while photos is None and counter < 3:
             try:
-                # Trying to randomize the fetch a bit. I know there are roughly 14k photos in this groups.
-                random_page = randint(1, 7500)
+                # Trying to randomize the fetch a bit, limited by the number of photos in the group
+                random_page = randint(1, group.poolcount)
                 photos = group.getPhotos(per_page=2, page=random_page)
                 # More randomizing
                 one_photo = photos[randint(0, 1)]
