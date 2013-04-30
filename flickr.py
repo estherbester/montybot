@@ -682,7 +682,7 @@ class Group(object):
         self.__description = group.description.text
         self.__members = group.members.text
         self.__privacy = group.privacy.text
-        self.__poolcount = group.pool_count.text
+        self.__poolcount = int(group.pool_count.text)
 
     def __str__(self):
         return '<Flickr Group %s>' % self.id
