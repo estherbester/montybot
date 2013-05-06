@@ -7,6 +7,8 @@ from irc.client import ip_numstr_to_quad
 from irc.client import ip_quad_to_numstr
 
 from get_puppy import get_puppy
+from get_puppy import FLICKR_GROUP 
+from get_puppy import PUG_GROUP 
 
 from link_log import detect_hyperlinks
 
@@ -48,7 +50,8 @@ class MontyBot(irc.bot.SingleServerIRCBot):
 
     def is_myself(self, message_first_part):
         my_nickname = irc.strings.lower(self.connection.get_nickname())
-        return irc.strings.lower(message_first_part) == my_nickname
+        #return irc.strings.lower(message_first_part) == my_nickname
+        return my_nickname in irc.strings.lower(message_first_part)
 
     def on_dccmsg(self, c, e):
         c.privmsg("You said: " + e.arguments[0])
@@ -74,8 +77,11 @@ class MontyBot(irc.bot.SingleServerIRCBot):
         elif cmd == 'go away':
             self.die()
         elif 'puppy time' in cmd.lower():
-            puppy_url = get_puppy()
+            puppy_url = get_puppy(FLICKR_GROUP)
             c.privmsg(self.channel, "Puppy time! " + puppy_url)
+        elif 'pug please' in cmd.lower():
+            puppy_url = get_puppy(PUG_GROUP)
+            c.privmsg(self.channel, "Pug for you " + puppy_url)
         elif cmd == 'dcc':
             dcc = self.dcc_listen()
             c.ctcp("DCC", nick, "CHAT chat %s %d" % (
