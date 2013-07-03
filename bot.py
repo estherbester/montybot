@@ -7,8 +7,10 @@ from irc.client import ip_numstr_to_quad
 from irc.client import ip_quad_to_numstr
 
 from get_puppy import get_puppy
-from get_puppy import FLICKR_GROUP 
+from get_puppy import CORGI_GROUP 
+from get_puppy import PUPPY_LOTTERY 
 from get_puppy import PUG_GROUP 
+from get_puppy import FISH_GROUP 
 
 from link_log import detect_hyperlinks
 
@@ -46,6 +48,10 @@ class MontyBot(irc.bot.SingleServerIRCBot):
                     working_links = detect_hyperlinks(e)
                     for link_data in working_links:
                         self.post_link(c, link_data)
+                else:
+                    if "fish" in msg:
+                        fish_url = get_puppy(FISH_GROUP)
+                        c.privmsg(self.channel, fish_url)
         return
 
     def is_myself(self, message_first_part):
@@ -76,12 +82,15 @@ class MontyBot(irc.bot.SingleServerIRCBot):
             self.disconnect()
         elif cmd == 'go away':
             self.die()
-        elif 'puppy time' in cmd.lower():
-            puppy_url = get_puppy(FLICKR_GROUP)
-            c.privmsg(self.channel, "Puppy time! " + puppy_url)
+        elif 'corgi time' in cmd.lower():
+            corgi_url = get_puppy(CORGI_GROUP)
+            c.privmsg(self.channel, "OMG corgi! {}".format(corgi_url))
         elif 'pug please' in cmd.lower():
-            puppy_url = get_puppy(PUG_GROUP)
-            c.privmsg(self.channel, "Pug for you " + puppy_url)
+            pug_url = get_puppy(PUG_GROUP)
+            c.privmsg(self.channel, "Pug for you {}".format(pug_url))
+        elif 'puppy lottery' in cmd.lower():
+            puppy_url = get_puppy(PUPPY_LOTTERY)
+            c.privmsg(self.channel, "Puppy time! {}".format(puppy_url))
         elif cmd == 'dcc':
             dcc = self.dcc_listen()
             c.ctcp("DCC", nick, "CHAT chat %s %d" % (

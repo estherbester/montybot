@@ -9,8 +9,10 @@ flickr.API_KEY = API_KEY
 flickr.API_SECRET = API_SECRET
 
 # Need the NSID of whatever group you're pulling from
-FLICKR_GROUP = '42653350@N00' # corgi
+CORGI_GROUP = '42653350@N00' # corgi
+PUPPY_LOTTERY = '26602919@N00' # puppies 
 PUG_GROUP = '57017533@N00'  # pug
+FISH_GROUP = '10272332@N00' # fish
 photos_per_page = 2
 
 def get_puppy(group_id):
