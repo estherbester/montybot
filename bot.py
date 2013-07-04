@@ -73,9 +73,18 @@ class MontyBot(irc.bot.SingleServerIRCBot):
             self.disconnect()
         elif cmd == 'go away':
             self.die()
-        elif 'puppy time' in cmd.lower():
-            puppy_url = get_puppy()
+        elif 'puppy lottery' in cmd.lower():
+            puppy_url = get_puppy('puppies')
             c.privmsg(self.channel, "Puppy time! " + puppy_url)
+        elif 'puppy lottery' in cmd.lower():
+            puppy_url = get_puppy('corgis')
+            c.privmsg(self.channel, "Corgi time! " + puppy_url)
+        elif 'pug please' in cmd.lower():
+            puppy_url = get_puppy('pugs')
+            c.privmsg(self.channel, "Pug for you! " + puppy_url)
+        elif 'hotdog!' in cmd.lower():
+            puppy_url = get_puppy('doxies')
+            c.privmsg(self.channel, "Dachshund time! " + puppy_url)
         elif cmd == 'dcc':
             dcc = self.dcc_listen()
             c.ctcp("DCC", nick, "CHAT chat %s %d" % (
