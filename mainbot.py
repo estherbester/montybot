@@ -73,7 +73,10 @@ class MainBot(irc.IRCClient):
 class MainBotFactory(protocol.ClientFactory):
     protocol = MainBot
 
-    def __init__(self, channel, command_plugins=[], message_plugins=[], nickname="montybot"):
+    def __init__(self, channel,
+                 command_plugins=[],
+                 message_plugins=[],
+                 nickname="montybot"):
         """
         command_plugins: a list of plugins that add extra commands
         """
@@ -81,8 +84,9 @@ class MainBotFactory(protocol.ClientFactory):
         self.nickname = nickname
         self.command_plugins = command_plugins
         self.message_plugins = message_plugins
-        for plugin in command_plugins.extend(message_plugins):
-            print "Plugin: %s" % plugin.name
+        assert command_plugins is not None
+        #for plugin in command_plugins.extend(message_plugins):
+        #    print "Plugin: %s" % plugin.name
 
     def clientConnectionLost(self, connector, reason):
         print "Lost connections (%s), reconnecting." % (reason,)

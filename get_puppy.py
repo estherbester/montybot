@@ -11,15 +11,15 @@ photos_per_page = 2
 
 # Need the NSID of whatever group you're pulling from
 GROUPS = {
-    'corgis': '42653350@N00',
-    'pugs': '57017533@N00',
-    'doxies': '52240151476@N01',
-    'puppies': '35034344814@N01'
+    'corgi': '42653350@N00',
+    'pug': '57017533@N00',
+    'doxy': '52240151476@N01',
+    'puppy': '35034344814@N01'
 }
 
 
 def get_puppy(group):
-        group = flickr.Group(GROUPS.get(group, GROUPS['puppies']))
+        group = flickr.Group(GROUPS.get(group, GROUPS['puppy']))
         photos = None
         counter = 1
         while photos is None and counter < 3:
