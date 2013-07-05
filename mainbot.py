@@ -55,7 +55,9 @@ class MainBot(irc.IRCClient):
 
     def _process_message(self, user, msg):
         for plugin in self.factory.message_plugins:
-            plugin.run(user, msg)
+            # User name, message, callback, args.
+            plugin.run(user, msg, self)
+            #self.msg(self.factory.channel, reply)
 
     def _get_msg_content(self, msg):
         return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
@@ -71,13 +73,16 @@ class MainBot(irc.IRCClient):
 class MainBotFactory(protocol.ClientFactory):
     protocol = MainBot
 
-    def __init__(self, channel, command_plugins=None, nickname="montybot"):
+    def __init__(self, channel, command_plugins=None, message_plugins=None, nickname="montybot"):
         """
         command_plugins: a list of plugins that add extra commands
         """
         self.channel = channel
         self.nickname = nickname
         self.command_plugins = command_plugins
+        self.message_plugins = message_plugins
+        for plugin in command_plugins.extend(message_plugins):
+            print "Plugin: %s" % plugin.name
 
     def clientConnectionLost(self, connector, reason):
         print "Lost connections (%s), reconnecting." % (reason,)

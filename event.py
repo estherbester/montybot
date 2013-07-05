@@ -6,7 +6,7 @@ from mainbot import MainBotFactory
 
 # TODO: better way to add plugins
 from puppy import PuppyCommandPlugin
-
+from link_log import LinkCheckLogPlugin
 
 if __name__ == "__main__":
     try:
@@ -18,6 +18,6 @@ if __name__ == "__main__":
                             6667,
                             MainBotFactory(str(chan),
                                            [PuppyCommandPlugin],
-                                           ))
+                                           [LinkCheckLogPlugin]))
         reactor.run()
 
