@@ -14,10 +14,12 @@ if __name__ == "__main__":
     except IndexError:
         print "required arg: '#channel'"
     else:
+        command_plugins = [PuppyCommandPlugin]
+        message_plugins = [LinkCheckLogPlugin]
         reactor.connectTCP('irc.freenode.net',
                             6667,
                             MainBotFactory(str(chan),
-                                           [PuppyCommandPlugin],
-                                           [LinkCheckLogPlugin]))
+                                           command_plugins,
+                                           message_plugins))
         reactor.run()
 

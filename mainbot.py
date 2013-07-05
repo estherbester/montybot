@@ -63,9 +63,9 @@ class MainBot(irc.IRCClient):
         return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
 
     def _match_commands(self, msg):
-        if msg in self.commands:
+        try:
             reply = self.commands[msg].__call__()
-        else:
+        except KeyError:
             reply = smartass_reply()
         return str(reply)
 
@@ -73,7 +73,7 @@ class MainBot(irc.IRCClient):
 class MainBotFactory(protocol.ClientFactory):
     protocol = MainBot
 
-    def __init__(self, channel, command_plugins=None, message_plugins=None, nickname="montybot"):
+    def __init__(self, channel, command_plugins=[], message_plugins=[], nickname="montybot"):
         """
         command_plugins: a list of plugins that add extra commands
         """

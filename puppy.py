@@ -50,7 +50,7 @@ class PuppyCommandPlugin(object):
 
     #@throttler.track
     def puppy():
-        return "Puppy time! %s" % get_puppy('puppies')
+        return "Puppy lottery! %s" % get_puppy('puppies')
 
     #@throttler.track
     def corgi():
