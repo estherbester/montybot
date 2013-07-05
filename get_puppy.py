@@ -26,7 +26,8 @@ def get_puppy(group):
             try:
                 # Trying to randomize the fetch a bit, limited by the number of photos in the group
                 random_page = randint(1, group.poolcount / photos_per_page)
-                photos = group.getPhotos(per_page=photos_per_page, page=random_page)
+                photos = group.getPhotos(per_page=photos_per_page,
+                                         page=random_page)
                 # More randomizing
                 one_photo = choice(photos)
             except (AttributeError, flickr.FlickrError) as e:
@@ -47,10 +48,14 @@ def get_puppy(group):
 def get_photo_url(photo, size="Medium"):
     method = 'flickr.photos.getSizes'
     data = flickr._doget(method, photo_id=photo.id)
+    return _get_resized(data, size)
+    raise flickr.FlickrError, "No URL found"
+
+
+def _get_resized(data, size):
     for psize in data.rsp.sizes.size:
         if psize.label == size:
             return psize.source
-    raise flickr.FlickrError, "No URL found"
 
 if __name__ == '__main__':
     import sys

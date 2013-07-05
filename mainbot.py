@@ -7,10 +7,6 @@ from twisted.internet import protocol
 
 from unknown_replies import smartass_reply
 
-QUIT = "go home, you're drunk"
-
-LISTEN_FOR = []
-
 
 class MainBot(irc.IRCClient):
     # commands
@@ -21,16 +17,12 @@ class MainBot(irc.IRCClient):
         return self.factory.nickname
 
     def signedOn(self):
-        self._add_quit_command()
         self._add_commands()
         self.join(self.factory.channel)
         print "Signed on as %s." % (self.nickname,)
 
     def joined(self, channel):
         print "Joined %s." % (channel,)
-
-    def _add_quit_command(self):
-        self.commands[QUIT] = self.quit
 
     def privmsg(self, user, channel, msg):
         if not user:
@@ -40,9 +32,9 @@ class MainBot(irc.IRCClient):
     def _add_commands(self):
         for plugin in self.factory.command_plugins:
             try:
-                self.commands.update(plugin.install())
+                self.commands.update(plugin.install(self))
             except Exception:
-                print "Could not install %s" % (plugin.__class__,)
+                print "Could not install %s" % (plugin.name,)
 
     def _handle_message(self, user, channel, msg):
         if self.nickname in msg:
@@ -55,7 +47,6 @@ class MainBot(irc.IRCClient):
 
     def _process_message(self, user, msg):
         for plugin in self.factory.message_plugins:
-            # User name, message, callback, args.
             plugin.run(user, msg, self)
             #self.msg(self.factory.channel, reply)
 
@@ -84,9 +75,6 @@ class MainBotFactory(protocol.ClientFactory):
         self.nickname = nickname
         self.command_plugins = command_plugins
         self.message_plugins = message_plugins
-        assert command_plugins is not None
-        #for plugin in command_plugins.extend(message_plugins):
-        #    print "Plugin: %s" % plugin.name
 
     def clientConnectionLost(self, connector, reason):
         print "Lost connections (%s), reconnecting." % (reason,)
