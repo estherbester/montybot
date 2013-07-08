@@ -1,32 +1,18 @@
-import flickr
-
-from collections import namedtuple
+# Class that uses Flickr to fetch photos of dogs
 
 from random import randint
 from random import choice
 
-from secret_settings import API_KEY
-from secret_settings import API_SECRET
+import flickr
 
-from throttler import Throttler
+from .secret_settings import API_KEY
+from .secret_settings import API_SECRET
 
-PuppyCommand = namedtuple('PuppyCommand', ['puppy_type',
-                                           'command',
-                                           'flickr_group_id',
-                                           'reply_prefix'])
+from ..throttler import Throttler
 
-GENERIC = PuppyCommand('puppy', 'puppy lottery', '35034344814@N01', "Puppy lottery!")
-PUG = PuppyCommand('pug', 'pug please', '57017533@N00', "Pug for you")
-CORGI = PuppyCommand('corgi', 'corgi time', '42653350@N00', "OMG corgi!")
-DOXY = PuppyCommand('doxy', 'hotdog', '52240151476@N01', "Dachshund time")
-
-AVAILABLE_COMMANDS = [GENERIC, PUG, CORGI, DOXY]
-
-flickr.API_KEY = API_KEY
-flickr.API_SECRET = API_SECRET
-PHOTOS_PER_PAGE = 20
-MAX_API_CALLS = 60
-
+from ..plugin_config import AVAILABLE_COMMANDS
+from ..plugin_config import PHOTOS_PER_PAGE
+from ..plugin_config import MAX_API_CALLS
 
 # Need the NSID of whatever group you're pulling from
 GROUPS = {
@@ -36,6 +22,9 @@ GROUPS = {
 REPLIES = {
     pc.puppy_type: pc.reply_prefix for pc in AVAILABLE_COMMANDS
 }
+
+flickr.API_KEY = API_KEY
+flickr.API_SECRET = API_SECRET
 
 
 class PuppyFetch(object):

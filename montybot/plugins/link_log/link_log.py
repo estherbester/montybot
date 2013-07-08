@@ -6,13 +6,13 @@
 
 import re
 
-from irc_logger import IRCLogger
-from link import Link
-from plugin_metaclass import PluginMetaClass
+from ..irc_logger import IRCLogger
+from ..metaclass import PluginMetaClass
 
-# Configuration is done here
-LOG_LINKS = True
-LINK_LOG_FILE = 'links_in_channel.txt'
+from ..plugin_config import LOG_LINKS
+from ..plugin_config import LINK_LOG_FILE
+
+from .link import Link
 
 
 class LinkCheckLogPlugin(object):

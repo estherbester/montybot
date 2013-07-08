@@ -3,8 +3,10 @@
 
 # thanks http://stackoverflow.com/questions/6760685/creating-a-singleton-in-python
 class PluginMetaClass(type):
-    """ This is for making each plugin a singleton.
-     We need to make sure both the plugin and the logger are singletons. """
+    """
+    This is for making each plugin a singleton.
+    We need to make sure both the plugin and the logger are singletons.
+    """
     _instances = {}
 
     def __call__(cls, *args, **kwargs):

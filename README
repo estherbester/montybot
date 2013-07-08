@@ -1,49 +1,35 @@
-TODO:
+TODO
+====
 * make this a real app
 * docs
 * testing
 * make the different bots plugins
 
-HOW TO USE:
+HOW TO USE
+==========
 * In the shell, run:
 : $ "python event.py "<channel>"
 * To use Puppy Bot you need a Flickr API key. Currently the group used is corgis but you can change that, obviously (though why would you want to?)
 
-REQUIREMENTS:
+REQUIREMENTS
+============
+
 * Twisted and its dependencies
 * flickrpy
-* requests
+* python-requests
 * BeautifulSoup
 
-For PuppyBot:
-* flickrpy (included here as flickr.py; source https://code.google.com/p/flickrpy/)
-* flickr API key (store in secret_settings.py as API_KEY and API_SECRET)
+For PuppyBot::
+    * flickrpy (included here as flickr.py because I patched it slightly; source https://code.google.com/p/flickrpy/)
+    * flickr API key (store in secret_settings.py as API_KEY and API_SECRET; see SAMPLE file included here)
 
-For Link log:
-* python-requests [python-requests.org]
-* BeautifulSoup
-* Create an empty text file, called 'links_in_channel.txt', in the same directory as the app.
+For Link log::
+    * python-requests [python-requests.org]
+    * BeautifulSoup
+    * Create an empty text file, called 'links_in_channel.txt', in the same directory as the app.
 
 
-LICENSE
-http://opensource.org/licenses/MITThe MIT License (MIT)
+THANKS TO
+=========
+* bmessemer for invaluable feedback
 
-Copyright (c) 2013 Me
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.

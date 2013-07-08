@@ -1,4 +1,4 @@
-from plugin_metaclass import PluginMetaClass
+from .metaclass import PluginMetaClass
 
 LINK_LOG_FILE = 'links_in_channel.txt'
 

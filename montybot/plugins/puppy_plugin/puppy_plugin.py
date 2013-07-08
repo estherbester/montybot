@@ -1,8 +1,10 @@
+# Plugin class to call the puppy photo fetcher
 # TODO: This sucks.
 
 from functools import partial
-from get_puppy import PuppyFetch
-from get_puppy import AVAILABLE_COMMANDS
+
+from .get_puppy import PuppyFetch
+from .get_puppy import AVAILABLE_COMMANDS
 
 
 class PuppyCommandPlugin(object):
