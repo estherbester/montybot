@@ -39,10 +39,13 @@ class Link(object):
 
         if response.status_code == 200:
             """ we get a lot of images. """
-            if response.headers['content-type'].startswith('image'):
-                self.content = "image"
+            if self.is_image(response):
+                self.content = "[image]"
             else:
                 self.content = response.content
+
+    def is_image(self, response):
+        return response.headers['content-type'].startswith('image')
 
     @property
     def text(self):
@@ -54,6 +57,8 @@ class Link(object):
     @property
     def page_title(self):
         """Given a page, scrape the title"""
+        if self.content == "image":
+            return self.content
         try:
             soup = BeautifulSoup(self.content)
             return soup.find('title').text.encode('ascii', 'replace')
