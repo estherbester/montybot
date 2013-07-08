@@ -1,23 +1,35 @@
-TODO: 
+TODO
+====
 * make this a real app
 * docs
 * testing
 * make the different bots plugins
 
-HOW TO USE:
+HOW TO USE
+==========
 * In the shell, run:
-: $ "python bot.py <server[:port]> <channel> <bot nick> [if using link log: True]
-* If you want to use the link log, your last arg should be "True"
+: $ "python event.py "<channel>"
 * To use Puppy Bot you need a Flickr API key. Currently the group used is corgis but you can change that, obviously (though why would you want to?)
 
-REQUIREMENTS:
-* python irclib [https://bitbucket.org/jaraco/irc]
+REQUIREMENTS
+============
 
-For PuppyBot:
-* flickrpy (included here as flickr.py; source https://code.google.com/p/flickrpy/)
-* flickr API key (store in secret_settings.py as API_KEY and API_SECRET)
-
-For Link log:
-* python-requests [python-requests.org]
+* Twisted and its dependencies
+* flickrpy
+* python-requests
 * BeautifulSoup
-* Create an empty text file, called 'links_in_channel.txt', in the same directory as the app.
+
+For PuppyBot::
+    * flickrpy (included here as flickr.py because I patched it slightly; source https://code.google.com/p/flickrpy/)
+    * flickr API key (store in secret_settings.py as API_KEY and API_SECRET; see SAMPLE file included here)
+
+For Link log::
+    * python-requests [python-requests.org]
+    * BeautifulSoup
+    * Create an empty text file, called 'links_in_channel.txt', in the same directory as the app.
+
+
+THANKS TO
+=========
+* bmessemer for invaluable feedback
+
