@@ -18,14 +18,20 @@ class MainBot(irc.IRCClient):
 
     def signedOn(self):
         self._add_commands()
-        self.join(self.factory.channel)
+        #self.join(self.factory.channel)
         print "Signed on as %s." % (self.nickname,)
+        print "Joining channels %r " % self.factory.channels
+        self.join_channels()
+
+    def join_channels(self):
+        for channel in self.factory.channels:
+            self.join(channel)
 
     def joined(self, channel):
         print "Joined %s." % (channel,)
 
     def privmsg(self, user, channel, msg):
-        if not user:
+        if not user or not channel:
             return
         self._handle_message(user, channel, msg)
 
@@ -33,45 +39,47 @@ class MainBot(irc.IRCClient):
         for plugin in self.factory.command_plugins:
             try:
                 self.commands.update(plugin.install(self))
-            except Exception:
-                print "Could not install %s" % (plugin.name,)
+            except Exception as e:
+                print "Could not install %s: %s" % (plugin.name, e)
 
     def _handle_message(self, user, channel, msg):
         if self.nickname in msg:
             msg = self._get_msg_content(msg.strip())
-            reply = self._match_commands(msg)
-            self.msg(self.factory.channel, reply)
+            self._match_command(user, channel, msg)
         # SEE HERE: non-command plugins only work for non-commands!!
         else:
-            self._process_message(user, msg)
+            self._process_message(user, channel, msg)
 
-    def _process_message(self, user, msg):
+    def _process_message(self, user, channel, msg):
         for plugin in self.factory.message_plugins:
-            plugin.run(user, msg, self)
+            plugin.run(user, channel, msg, self)
             #self.msg(self.factory.channel, reply)
 
     def _get_msg_content(self, msg):
         return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
 
-    def _match_commands(self, msg):
+    def _match_command(self, user, channel, msg):
         try:
-            reply = self.commands[msg].__call__()
+            self.commands[msg].__call__(user, channel)
         except KeyError:
-            reply = smartass_reply()
-        return str(reply)
+            self.msg(channel, smartass_reply())
 
 
 class MainBotFactory(protocol.ClientFactory):
+
     protocol = MainBot
 
-    def __init__(self, channel,
+    def __init__(self, channels,
                  command_plugins=[],
                  message_plugins=[],
                  nickname="montybot"):
         """
-        command_plugins: a list of plugins that add extra commands
+        :param channels: List of channels to join
+        :param command_plugins: List of plugins that add extra commands
+        :param message_plugins: List of plugins that do things to messages but
+            are not commands
         """
-        self.channel = channel
+        self.channels = channels
         self.nickname = nickname
         self.command_plugins = command_plugins
         self.message_plugins = message_plugins

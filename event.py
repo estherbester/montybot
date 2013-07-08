@@ -5,36 +5,29 @@ from twisted.internet import reactor
 from mainbot import MainBotFactory
 
 # TODO: better way to add plugins
-from puppy import PuppyCommandPlugin
+from creative_quit import CreativeQuitPlugin
+from puppy_plugin import PuppyCommandPlugin
 from link_log import LinkCheckLogPlugin
 
-QUIT_MSG = "go home, you're drunk"
 
-
-class CreativeQuitPlugin(object):
-    name = "Creative quit plugin"
-
-    def __init__(self, bot_instance):
-        self.bot_instance = bot_instance
-
-    @classmethod
-    def install(cls, bot_instance):
-        cls.__init__(bot_instance)
-        return {QUIT_MSG: bot_instance.quit}
-
+def tokenize_channels(raw_str):
+    channels = channel_string.split(' ')
+    return [str(channel).strip() for channel in channels]
 
 if __name__ == "__main__":
     try:
-        chan = sys.argv[1]
+        channel_string = sys.argv[1]
+        channels = tokenize_channels(channel_string)
     except IndexError:
-        print "required arg: '#channel'"
+        print "Must indicate channels, separated by spaces in a \
+            single quoted string: '#channel1 #channel2'"
     else:
         command_plugins = [PuppyCommandPlugin, CreativeQuitPlugin]
         message_plugins = [LinkCheckLogPlugin]
+
         reactor.connectTCP('irc.freenode.net',
                             6667,
-                            MainBotFactory(str(chan),
+                            MainBotFactory(channels,
                                            command_plugins,
                                            message_plugins))
         reactor.run()
-

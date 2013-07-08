@@ -9,6 +9,8 @@ class LinkException(Exception):
 
 
 class Link(object):
+    # the found link object should have info about the URL, the contents
+    # (or at least the head tag), a formatted string description, and timestamp
     url = None
     content = None
     message_format = "{url} {delim} {note}"
@@ -43,7 +45,7 @@ class Link(object):
                 self.content = response.content
 
     @property
-    def formatted_string(self):
+    def text(self):
         """ Create a pretty string for the link. """
         return self.message_format.format(url=self.url,
                                           delim='|',

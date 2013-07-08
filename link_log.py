@@ -22,26 +22,25 @@ class LinkCheckLogPlugin(object):
     logging_enabled = LOG_LINKS
     logger = None
 
+    # TODO: Not sure this is properly done (see metaclass)
     def __init__(self):
         """ Instantiates logger if logging is enabled """
         if self.logging_enabled:
-            print "Logging is enabled for Link checker"
             self.logger = IRCLogger(LINK_LOG_FILE)
 
     @classmethod
-    def run(cls, user, message, bot_instance):
+    def run(cls, user, channel, message, bot_instance):
         """ """
         instance = cls()
         # if it looks like there might be a link we want
         if 'http' in message:
-            instance._run(user, message, bot_instance)
+            instance._run(user, channel, message, bot_instance)
 
-    def _run(self, user, message, bot_instance):
+    def _run(self, user, channel, message, bot_instance):
         # check for links
         for link in self._scrape_links(user, message):
             # TODO: this sucks.
-            bot_instance.msg(bot_instance.factory.channel,
-                 link.formatted_string)
+            bot_instance.msg(channel, link.text)
 
     def _scrape_links(self, user, message):
         """ Return any found, working hyperlinks in an irc message. """
@@ -77,8 +76,8 @@ if __name__ == "__main__":
 
     mock_bot = Mock()
     mock_bot.factory = Mock()
-    mock_bot.factory.channel = "#scoobydoo"
+    mock_bot.factory.channels = ["#scoobydoo"]
     mock_bot.msg = Mock(return_value='oo')
 
-    LinkCheckLogPlugin.run('test', arguments[0], mock_bot)
+    LinkCheckLogPlugin.run('test', '#scoobydoo', arguments[0], mock_bot)
 

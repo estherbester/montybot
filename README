@@ -6,8 +6,7 @@ TODO:
 
 HOW TO USE:
 * In the shell, run:
-: $ "python bot.py <server[:port]> <channel> <bot nick> [if using link log: True]
-* If you want to use the link log, your last arg should be "True"
+: $ "python event.py "<channel>"
 * To use Puppy Bot you need a Flickr API key. Currently the group used is corgis but you can change that, obviously (though why would you want to?)
 
 REQUIREMENTS:
