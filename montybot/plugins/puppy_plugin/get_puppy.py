@@ -43,6 +43,7 @@ class PuppyFetch(object):
             command = cls(puppy_type)
             prefix = REPLIES[puppy_type]
             result = command._get_url()
+            print "fetching url"
         except KeyError, flickr.FlickrError:
             result = "Sorry, no puppy for you =("
         return command.reply_string.format(prefix=prefix, msg=result)
