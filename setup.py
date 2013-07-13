@@ -6,7 +6,7 @@ setup(
     author='E N',
     author_email='esther.nam@gmail.com',
     packages=['montybot', 'montybot.plugins'],
-    scripts=['bin/montybot'],
+    scripts=[],
     url='http://github.com/estherbester/montybot',
     license='LICENSE.txt',
     description='Twisted-based IRC Bot .',
