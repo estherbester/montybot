@@ -31,5 +31,6 @@ if __name__ == "__main__":
                             6667,
                             MainBotFactory(channels,
                                            command_plugins,
-                                           message_plugins))
+                                           message_plugins,
+										   nickname="puppybot"))
         reactor.run()
