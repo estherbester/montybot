@@ -7,6 +7,8 @@ from twisted.internet import protocol
 
 from unknown_replies import smartass_reply
 
+SHOULD_IDENTIFY=True
+NICK_PASS = 'snausages'
 
 class MainBot(irc.IRCClient):
     # commands
@@ -18,7 +20,9 @@ class MainBot(irc.IRCClient):
 
     def signedOn(self):
         self._add_commands()
-        #self.join(self.factory.channel)
+        if SHOULD_IDENTIFY:
+            self.msg("NickServ", "identify %s" % (NICK_PASS,) )
+			 
         print "Signed on as %s." % (self.nickname,)
         print "Joining channels %r " % self.factory.channels
         self.join_channels()
@@ -31,7 +35,9 @@ class MainBot(irc.IRCClient):
         print "Joined %s." % (channel,)
 
     def privmsg(self, user, channel, msg):
+        """ This is where the magic happens """
         if not user or not channel:
+            print msg
             return
         self._handle_message(user, channel, msg)
 
@@ -43,17 +49,19 @@ class MainBot(irc.IRCClient):
                 print "Could not install %s: %s" % (plugin.name, e)
 
     def _handle_message(self, user, channel, msg):
-        if self.nickname in msg:
-            msg = self._get_msg_content(msg.strip())
-            self._match_command(user, channel, msg)
+        if msg.startswith(self.nickname):
+            command = self._get_msg_content(msg.strip())
+            self._match_command(user, channel, command)
         # SEE HERE: non-command plugins only work for non-commands!!
         else:
             self._process_message(user, channel, msg)
 
+    def _is_command(self, msg):
+        return msg.startswith(self.nickname)
+
     def _process_message(self, user, channel, msg):
         for plugin in self.factory.message_plugins:
             plugin.run(user, channel, msg, self)
-            #self.msg(self.factory.channel, reply)
 
     def _get_msg_content(self, msg):
         return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
