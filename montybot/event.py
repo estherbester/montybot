@@ -25,7 +25,7 @@ if __name__ == "__main__":
             single quoted string: '#channel1 #channel2'"
     else:
         command_plugins = [PuppyCommandPlugin, CreativeQuitPlugin]
-        message_plugins = [LinkCheckLogPlugin]
+        message_plugins = []#[LinkCheckLogPlugin]
 
         reactor.connectTCP('irc.freenode.net',
                             6667,

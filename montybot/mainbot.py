@@ -3,12 +3,11 @@
 import re
 
 from twisted.words.protocols import irc
+from twisted.internet import task
 from twisted.internet import protocol
 
 from unknown_replies import smartass_reply
 
-SHOULD_IDENTIFY=True
-NICK_PASS = 'snausages'
 
 class MainBot(irc.IRCClient):
     # commands
@@ -20,14 +19,22 @@ class MainBot(irc.IRCClient):
 
     def signedOn(self):
         self._add_commands()
-        if SHOULD_IDENTIFY:
-            self.msg("NickServ", "identify %s" % (NICK_PASS,) )
-			 
         print "Signed on as %s." % (self.nickname,)
-        print "Joining channels %r " % self.factory.channels
-        self.join_channels()
+
+
+    def _must_register(self):
+        self.msg("NickServ", "identify %s" % (self.factory.password,))
+
+    def noticed(self, user, channel, message):
+        print "Notice from %s in channel %s: %s" % (user, channel, message)
+        if user.startswith("NickServ") and "This nickname is registered. Please" in message:
+            self._must_register()
+        if user.startswith("NickServ") and "You are now identified for" in message: 
+            print "Ready"
+            self.join_channels()
 
     def join_channels(self):
+        print "Joining channels %r " % self.factory.channels
         for channel in self.factory.channels:
             self.join(channel)
 
@@ -80,7 +87,9 @@ class MainBotFactory(protocol.ClientFactory):
     def __init__(self, channels,
                  command_plugins=[],
                  message_plugins=[],
-                 nickname="montybot"):
+                 nickname="montybot",
+                 password="snausages"
+                 ):
         """
         :param channels: List of channels to join
         :param command_plugins: List of plugins that add extra commands
@@ -89,6 +98,7 @@ class MainBotFactory(protocol.ClientFactory):
         """
         self.channels = channels
         self.nickname = nickname
+        self.password = password
         self.command_plugins = command_plugins
         self.message_plugins = message_plugins
 

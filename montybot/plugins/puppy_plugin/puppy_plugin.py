@@ -13,10 +13,10 @@ class PuppyCommandPlugin(object):
     """
     name = 'Puppy Commands'
 
+
     def __init__(self, bot_instance):
         """ Get the bot instance so we can do stuff with it. """
         self.bot_instance = bot_instance
-        self.commands = self._create_command_dict()
 
     @classmethod
     def install(cls, bot_instance):
@@ -26,7 +26,10 @@ class PuppyCommandPlugin(object):
         :rtype: Dictionary
         """
         plugin = cls(bot_instance)
-        return plugin.commands
+        return plugin._create_command_dict()
+
+    def spit(self, reply, user, channel):
+        self.bot_instance.msg(channel, reply)
 
     def get_link(self, puppy_type, user, channel):
         """
@@ -39,11 +42,18 @@ class PuppyCommandPlugin(object):
     def _create_command_dict(self):
         """ Create the dict of commands this bot responds to. """
         commands = {}
+        
+        commands['what have you?'] = partial(self.spit, self._command_string())
         for puppy_command in AVAILABLE_COMMANDS:
             commands[puppy_command.command] = partial(self.get_link,
                                                       puppy_command.puppy_type)
         return commands
 
+    def _command_string(self):
+        return '; '.join(self._command_list())
+
+    def _command_list(self):
+        return [command.command for command in AVAILABLE_COMMANDS]
 
 if __name__ == "__main__":
     from mock import Mock
