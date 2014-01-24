@@ -26,12 +26,14 @@ class MainBot(irc.IRCClient):
         self.msg("NickServ", "identify %s" % (self.factory.password,))
 
     def noticed(self, user, channel, message):
+        """
+        """
         print "Notice from %s in channel %s: %s" % (user, channel, message)
         if user.startswith("NickServ") and "This nickname is registered. Please" in message:
             self._must_register()
         if user.startswith("NickServ") and "You are now identified for" in message: 
             print "Ready"
-            self.join_channels()
+        self.join_channels()
 
     def join_channels(self):
         print "Joining channels %r " % self.factory.channels
@@ -74,11 +76,17 @@ class MainBot(irc.IRCClient):
         return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
 
     def _match_command(self, user, channel, msg):
-        try:
-            self.commands[msg].__call__(user, channel)
-        except KeyError:
+        commands = [func for command, func in self.commands.items() \
+            if self._msg_contains_cmd(msg, command)]
+        if len(commands) > 0: 
+           commands[0].__call__(user, channel)
+        else:
             self.msg(channel, smartass_reply())
 
+    def _msg_contains_cmd(self, msg, cmd):
+        msg = msg.lower()
+        cmd = cmd.lower()
+        return cmd in msg
 
 class MainBotFactory(protocol.ClientFactory):
 
