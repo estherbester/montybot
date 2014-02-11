@@ -28,10 +28,11 @@ class PuppyCommandPlugin(object):
         plugin = cls(bot_instance)
         return plugin._create_command_dict()
 
-    def spit(self, reply, user, channel):
+    def simple_msg(self, reply, user, channel):
+        """ A simple message """
         self.bot_instance.msg(channel, reply)
 
-    def get_link(self, puppy_type, user, channel):
+    def message_with_link(self, puppy_type, user, channel):
         """
         This is the function mapped to each puppy command. Args are passed
         in via the partial (in _create_command_dict).
@@ -42,18 +43,20 @@ class PuppyCommandPlugin(object):
     def _create_command_dict(self):
         """ Create the dict of commands this bot responds to. """
         commands = {}
-        
-        commands['what have you?'] = partial(self.spit, self._command_string())
+
+        commands['what have you?'] = partial(self.simple_msg, self._list_of_commands())
+
         for puppy_command in AVAILABLE_COMMANDS:
-            commands[puppy_command.command] = partial(self.get_link,
+            commands[puppy_command.command] = partial(self.message_with_link,
                                                       puppy_command.puppy_type)
         return commands
 
-    def _command_string(self):
+    def _list_of_commands(self):
         return '; '.join(self._command_list())
 
     def _command_list(self):
         return [command.command for command in AVAILABLE_COMMANDS]
+
 
 if __name__ == "__main__":
     from mock import Mock

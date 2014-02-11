@@ -21,20 +21,6 @@ class MainBot(irc.IRCClient):
         self._add_commands()
         print "Signed on as %s." % (self.nickname,)
 
-
-    def _must_register(self):
-        self.msg("NickServ", "identify %s" % (self.factory.password,))
-
-    def noticed(self, user, channel, message):
-        """
-        """
-        print "Notice from %s in channel %s: %s" % (user, channel, message)
-        if user.startswith("NickServ") and "This nickname is registered. Please" in message:
-            self._must_register()
-        if user.startswith("NickServ") and "You are now identified for" in message: 
-            print "Ready"
-        self.join_channels()
-
     def join_channels(self):
         print "Joining channels %r " % self.factory.channels
         for channel in self.factory.channels:
@@ -50,6 +36,15 @@ class MainBot(irc.IRCClient):
             return
         self._handle_message(user, channel, msg)
 
+    def noticed(self, user, channel, message):
+        """ Callback for if the bot receives a Notice. """
+        print "Notice from %s in channel %s: %s" % (user, channel, message)
+        if user.startswith("NickServ") and "This nickname is registered. Please" in message:
+            self._must_register()
+        if user.startswith("NickServ") and "You are now identified for" in message:
+            print "Ready"
+        self.join_channels()
+
     def _add_commands(self):
         for plugin in self.factory.command_plugins:
             try:
@@ -57,8 +52,13 @@ class MainBot(irc.IRCClient):
             except Exception as e:
                 print "Could not install %s: %s" % (plugin.name, e)
 
+    def _get_msg_content(self, msg):
+        return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
+
     def _handle_message(self, user, channel, msg):
-        if msg.startswith(self.nickname):
+        """ Every message is handled.
+        """
+        if self._is_command(msg):
             command = self._get_msg_content(msg.strip())
             self._match_command(user, channel, command)
         # SEE HERE: non-command plugins only work for non-commands!!
@@ -68,25 +68,32 @@ class MainBot(irc.IRCClient):
     def _is_command(self, msg):
         return msg.startswith(self.nickname)
 
-    def _process_message(self, user, channel, msg):
-        for plugin in self.factory.message_plugins:
-            plugin.run(user, channel, msg, self)
-
-    def _get_msg_content(self, msg):
-        return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
-
     def _match_command(self, user, channel, msg):
+        """
+        Call the command that matches anything in our command dict.
+        If no matches, return a smartass reply.
+        """
         commands = [func for command, func in self.commands.items() \
             if self._msg_contains_cmd(msg, command)]
-        if len(commands) > 0: 
+
+        if len(commands) > 0:
            commands[0].__call__(user, channel)
         else:
             self.msg(channel, smartass_reply())
 
     def _msg_contains_cmd(self, msg, cmd):
+        """ Scrub the message """
         msg = msg.lower()
         cmd = cmd.lower()
         return cmd in msg
+
+    def _must_register(self):
+        self.msg("NickServ", "identify %s" % (self.factory.password,))
+
+    def _process_message(self, user, channel, msg):
+        for plugin in self.factory.message_plugins:
+            plugin.run(user, channel, msg, self)
+
 
 class MainBotFactory(protocol.ClientFactory):
 
