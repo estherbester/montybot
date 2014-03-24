@@ -45,6 +45,7 @@ class PuppyCommandPlugin(object):
         commands = {}
 
         commands['what have you?'] = partial(self.simple_msg, self._list_of_commands())
+        commands['help'] = partial(self.simple_msg, self._list_of_commands())
 
         for puppy_command in AVAILABLE_COMMANDS:
             commands[puppy_command.command] = partial(self.message_with_link,

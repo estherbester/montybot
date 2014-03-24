@@ -17,6 +17,11 @@ class MainBot(irc.IRCClient):
     def nickname(self):
         return self.factory.nickname
 
+    def ghost(self):
+        
+        self.msg('nickserv', 'GHOST puppybot snausages')
+        self.quit()
+    
     def signedOn(self):
         self._add_commands()
         print "Signed on as %s." % (self.nickname,)
