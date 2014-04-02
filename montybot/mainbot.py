@@ -1,5 +1,3 @@
-# Thanks eflorenzano.com/blog/2008/11/17/writing-markov-chain-irc-bot-twisted-and-python/
-
 import re
 
 from twisted.words.protocols import irc
@@ -7,6 +5,59 @@ from twisted.internet import task
 from twisted.internet import protocol
 
 from unknown_replies import smartass_reply
+
+
+class Message(object):
+    def __init__(self, user, channel, message, bot_instance):
+        self.sender = user
+        self.channel = channel
+        self.msg = message
+        self.bot_instance = bot_instance
+
+    def handle(self):
+        self.bot_instance.handled = False
+        self._handle()
+
+    def _handle(self):
+        if self.bot_instance.factory.taunt_plugins:
+            self._taunt()
+        if self._is_command() and not self.bot_instance.handled:
+            command = self._get_msg_content()
+            self._match_command(command)
+        else:
+            for plugin in self.bot_instance.factory.message_plugins:
+                plugin.run(self.user, self.channel, self.msg, self.bot_instance)
+
+    def _get_msg_content(self):
+        msg = self.msg.strip()
+        return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
+
+    def _is_command(self):
+        return self.msg.startswith(self.bot_instance.nickname)
+
+    def _match_command(self):
+        """
+        Call the command that matches anything in our command dict.
+        If no matches, return a smartass reply.
+        """
+        commands = [func for command, func in self.bot_instance.commands.items() \
+            if self._msg_contains_cmd(self.msg, command)]
+
+        # if nothing available, send a smartass reply
+        if len(commands) > 0:
+           commands[0].__call__(self.user, self.channel)
+        else:
+            self.bot_instance.msg(self.channel, smartass_reply())
+
+    def _msg_contains_cmd(self, cmd):
+        """ Scrub the message """
+        msg = self.msg.lower()
+        cmd = cmd.lower()
+        return cmd in msg
+
+    def _taunt(self):
+        for plugin in self.bot_instance.factory.taunt_plugins:
+            plugin.run(self.user, self.channel, self.msg, self.bot_instance)
 
 
 class MainBot(irc.IRCClient):
@@ -18,10 +69,10 @@ class MainBot(irc.IRCClient):
         return self.factory.nickname
 
     def ghost(self):
-        
+
         self.msg('nickserv', 'GHOST puppybot snausages')
         self.quit()
-    
+
     def signedOn(self):
         self._add_commands()
         print "Signed on as %s." % (self.nickname,)
@@ -57,47 +108,16 @@ class MainBot(irc.IRCClient):
             except Exception as e:
                 print "Could not install %s: %s" % (plugin.name, e)
 
-    def _get_msg_content(self, msg):
-        return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
-
     def _handle_message(self, user, channel, msg):
         """ Every message is handled.
         """
-        if self._is_command(msg):
-            command = self._get_msg_content(msg.strip())
-            self._match_command(user, channel, command)
-        # SEE HERE: non-command plugins only work for non-commands!!
-        else:
-            self._process_message(user, channel, msg)
-
-    def _is_command(self, msg):
-        return msg.startswith(self.nickname)
-
-    def _match_command(self, user, channel, msg):
-        """
-        Call the command that matches anything in our command dict.
-        If no matches, return a smartass reply.
-        """
-        commands = [func for command, func in self.commands.items() \
-            if self._msg_contains_cmd(msg, command)]
-
-        if len(commands) > 0:
-           commands[0].__call__(user, channel)
-        else:
-            self.msg(channel, smartass_reply())
-
-    def _msg_contains_cmd(self, msg, cmd):
-        """ Scrub the message """
-        msg = msg.lower()
-        cmd = cmd.lower()
-        return cmd in msg
+        self.message = Message(user, channel, msg, self)
+        self.message.handle()
+        del self.message
 
     def _must_register(self):
         self.msg("NickServ", "identify %s" % (self.factory.password,))
 
-    def _process_message(self, user, channel, msg):
-        for plugin in self.factory.message_plugins:
-            plugin.run(user, channel, msg, self)
 
 
 class MainBotFactory(protocol.ClientFactory):
@@ -107,6 +127,7 @@ class MainBotFactory(protocol.ClientFactory):
     def __init__(self, channels,
                  command_plugins=[],
                  message_plugins=[],
+                 taunt_plugins=[],
                  nickname="montybot",
                  password="snausages"
                  ):
@@ -121,6 +142,7 @@ class MainBotFactory(protocol.ClientFactory):
         self.password = password
         self.command_plugins = command_plugins
         self.message_plugins = message_plugins
+        self.taunt_plugins = taunt_plugins
 
     def clientConnectionLost(self, connector, reason):
         print "Lost connections (%s), reconnecting." % (reason,)
