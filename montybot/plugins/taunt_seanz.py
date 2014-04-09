@@ -23,11 +23,12 @@ class TauntSeanPlugin(object):
     @classmethod
     def run(cls, user, channel, message, bot_instance):
         """ """
-        instance = cls(bot_instance)
+        self = cls(bot_instance)
+
         # if sean is asking
-        if instance._from_taunter_to_bot(user, message):
-            cls.bot_instance.handled = True
-            instance._run(user, channel, message)
+        if self._from_taunter_to_bot(user, message):
+            self.bot_instance.handled = True
+            self._run(user, channel, message)
 
     def _from_taunter_to_bot(self, user, message):
         return user.startswith(self.taunter_name) and message.startswith(self.bot_instance.nickname)
@@ -85,6 +86,10 @@ class TauntAlbertPlugin(TauntSeanPlugin):
 
 if __name__=="__main__":
     from mock import Mock
-
-    ta = TauntAlbertPlugin(Mock())
-    ta._run('foo', 'bar', 'mesage')
+    bot_instance = Mock()
+    try:
+        bot_instance.msg = Mock(return_value='foo')
+        sean_instance = TauntSeanPlugin.run('foo', 'bar', 'message', bot_instance)
+        f = TauntAlbertPlugin.run('foo', 'bar', 'message', bot_instance)
+    except Exception as error:
+        print error

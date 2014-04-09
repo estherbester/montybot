@@ -9,7 +9,7 @@ from unknown_replies import smartass_reply
 
 class Message(object):
     def __init__(self, user, channel, message, bot_instance):
-        self.sender = user
+        self.user = user
         self.channel = channel
         self.msg = message
         self.bot_instance = bot_instance
@@ -23,14 +23,16 @@ class Message(object):
             self._taunt()
         if self._is_command() and not self.bot_instance.handled:
             command = self._get_msg_content()
-            self._match_command(command)
+            self._match_command()
         else:
             for plugin in self.bot_instance.factory.message_plugins:
                 plugin.run(self.user, self.channel, self.msg, self.bot_instance)
 
     def _get_msg_content(self):
+        """ return the message content only.
+        """
         msg = self.msg.strip()
-        return re.compile(self.nickname + "[:,]* ?", re.I).sub('', msg)
+        return re.compile(self.bot_instance.nickname + "[:,]* ?", re.I).sub('', msg)
 
     def _is_command(self):
         return self.msg.startswith(self.bot_instance.nickname)
@@ -41,7 +43,7 @@ class Message(object):
         If no matches, return a smartass reply.
         """
         commands = [func for command, func in self.bot_instance.commands.items() \
-            if self._msg_contains_cmd(self.msg, command)]
+            if self._msg_contains_cmd(command)]
 
         # if nothing available, send a smartass reply
         if len(commands) > 0:
@@ -111,9 +113,12 @@ class MainBot(irc.IRCClient):
     def _handle_message(self, user, channel, msg):
         """ Every message is handled.
         """
-        self.message = Message(user, channel, msg, self)
-        self.message.handle()
-        del self.message
+        try:
+            self.message = Message(user, channel, msg, self)
+            self.message.handle()
+            del self.message
+        except Exception as error:
+            print error
 
     def _must_register(self):
         self.msg("NickServ", "identify %s" % (self.factory.password,))
