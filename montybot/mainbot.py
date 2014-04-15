@@ -9,6 +9,7 @@ from twisted.internet import protocol
 from unknown_replies import smartass_reply
 
 
+
 class MainBot(irc.IRCClient):
     # commands
     commands = {}
@@ -18,8 +19,9 @@ class MainBot(irc.IRCClient):
         return self.factory.nickname
 
     def ghost(self):
-        
-        self.msg('nickserv', 'GHOST puppybot snausages')
+		""" A stupid way to re-identify when cut off. Not sure 
+		how even to call this method while the app is running."""
+        self.msg('nickserv', 'GHOST %s %s' % (self.nickname, 'snausages'))
         self.quit()
     
     def signedOn(self):
@@ -107,8 +109,6 @@ class MainBotFactory(protocol.ClientFactory):
     def __init__(self, channels,
                  command_plugins=[],
                  message_plugins=[],
-                 nickname="montybot",
-                 password="snausages"
                  ):
         """
         :param channels: List of channels to join
@@ -116,10 +116,15 @@ class MainBotFactory(protocol.ClientFactory):
         :param message_plugins: List of plugins that do things to messages but
             are not commands
         """
+        #TODO: clean this up 
+		settings = self._read_config()['irc']
         self.channels = channels
-        self.nickname = nickname
-        self.password = password
-        self.command_plugins = command_plugins
+		try:
+			self.nickname = settings['nickname'] 
+			self.password = settings['password']
+		except KeyError as key:
+			print "You are missing %s in your config file."  % (key,)
+		self.command_plugins = command_plugins
         self.message_plugins = message_plugins
 
     def clientConnectionLost(self, connector, reason):
@@ -129,4 +134,16 @@ class MainBotFactory(protocol.ClientFactory):
 
     def clientConnectionFailed(self, connector, reason):
         print "Could not connect: %s" % (reason,)
+
+	def _read_config(self):
+		file_name = 'irc_creds.txt'
+		config = SafeConfigParser()
+		config.read(file_name)
+		config_dict = {}
+
+		for section in config.sections():
+			config_dict[section] = dict(config.items(section))
+
+		return config_dict
+
 
