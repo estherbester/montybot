@@ -33,7 +33,7 @@ class LinkCheckLogPlugin(object):
         """ """
         instance = cls()
         # if it looks like there might be a link we want
-        if 'http' in message:
+        if 'http' in message and user != bot_instance.nickname:
             instance._run(user, channel, message, bot_instance)
 
     def _run(self, user, channel, message, bot_instance):

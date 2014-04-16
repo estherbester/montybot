@@ -50,8 +50,8 @@ class Link(object):
     @property
     def text(self):
         """ Create a pretty string for the link. """
-        return self.message_format.format(url=self.url,
-                                          delim='|',
+        return self.message_format.format(url="^^^ Link", #url=self.url,
+                                          delim=':',
                                           note=self.page_title)
 
     @property
