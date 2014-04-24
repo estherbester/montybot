@@ -57,7 +57,7 @@ class Link(object):
     @property
     def page_title(self):
         """Given a page, scrape the title"""
-        if self.content == "image":
+        if self.content == "[image]":
             return self.content
         try:
             soup = BeautifulSoup(self.content)
