@@ -29,11 +29,11 @@ flickr.API_SECRET = API_SECRET
 
 class PuppyFetch(object):
     """
-	TODO: 
+    TODO: 
 
-	* make fewer API calls
-	* Rename since we don't just get puppies
-	"""
+    * make fewer API calls
+    * Rename since we don't just get puppies
+    """
     reply_string = "{prefix}: {msg}"
 
     throttler = Throttler('flickr', MAX_API_CALLS)
@@ -98,11 +98,11 @@ class PuppyFetch(object):
 
 class FlickrRandomizer(object):
     """
-	Given a group of flickr photos, pick a random one.
-	* A group could be a set, a user, or a group
-	"""
-	def __init__(self, collection):
-	    self.collection = collection
+    Given a group of flickr photos, pick a random one.
+    * A group could be a set, a user, or a group
+    """
+    def __init__(self, collection):
+        self.collection = collection
 
 
 

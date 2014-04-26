@@ -19,8 +19,8 @@ def _tokenize_channels(raw_str):
 
 
 if __name__ == "__main__":
-	""" TODO: config should be read here? """ 
-	
+    """ TODO: config should be read here? """ 
+    
     try:
         channel_string = sys.argv[1]
         channels = _tokenize_channels(channel_string)
@@ -38,5 +38,5 @@ if __name__ == "__main__":
                                            command_plugins,
                                            message_plugins,
                                            taunt_plugins,
-										   nickname="puppybot"))
+                                           ))
         reactor.run()
