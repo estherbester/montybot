@@ -70,7 +70,7 @@ class LinkCheckLogPlugin(object):
 
 if __name__ == "__main__":
     arguments = \
-['Test message with hyperlink like http://flickr.com and also http://nytimes.com', ]
+['Test message with hyperlink like http://flickr.com and also https://www.youtube.com/watch?v=BS0T8Cd4UhA', ]
 
     from mock import Mock
 
@@ -78,6 +78,5 @@ if __name__ == "__main__":
     mock_bot.factory = Mock()
     mock_bot.factory.channels = ["#scoobydoo"]
     mock_bot.msg = Mock(return_value='oo')
-
     LinkCheckLogPlugin.run('test', '#scoobydoo', arguments[0], mock_bot)
 

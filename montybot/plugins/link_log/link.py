@@ -57,10 +57,10 @@ class Link(object):
     @property
     def page_title(self):
         """Given a page, scrape the title"""
-        if self.content == "image":
+        if self.content == "[image]":
             return self.content
         try:
-            soup = BeautifulSoup(self.content)
+            soup = BeautifulSoup(self.content, convertEntities=BeautifulSoup.HTML_ENTITIES)
             return soup.find('title').text.encode('ascii', 'replace')
         except Exception:
             return "[Could not parse content]"
