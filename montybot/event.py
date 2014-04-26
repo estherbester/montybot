@@ -9,8 +9,8 @@ from mainbot import MainBotFactory
 from plugins.creative_quit import CreativeQuitPlugin
 from plugins.puppy_plugin.puppy_plugin import PuppyCommandPlugin
 from plugins.link_log.link_log import LinkCheckLogPlugin
-from plugins.taunt_seanz import TauntSeanPlugin 
-from plugins.taunt_seanz import TauntAlbertPlugin 
+from plugins.taunt_seanz import SeanzResponse 
+from plugins.taunt_seanz import AlbertResponse 
 
 
 def _tokenize_channels(raw_str):
@@ -19,6 +19,8 @@ def _tokenize_channels(raw_str):
 
 
 if __name__ == "__main__":
+	""" TODO: config should be read here? """ 
+	
     try:
         channel_string = sys.argv[1]
         channels = _tokenize_channels(channel_string)
@@ -27,7 +29,7 @@ if __name__ == "__main__":
             single quoted string: '#channel1 #channel2'"
     else:
         command_plugins = [PuppyCommandPlugin, CreativeQuitPlugin]       
-        taunt_plugins = [TauntAlbertPlugin, TauntSeanPlugin]
+        taunt_plugins = [AlbertResponse, SeanzResponse]
         message_plugins = [LinkCheckLogPlugin]
 
         reactor.connectTCP('irc.freenode.net',

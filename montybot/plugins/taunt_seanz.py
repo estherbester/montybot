@@ -1,3 +1,6 @@
+# This plugin allows the bot to respond in specific ways to specific
+# users
+
 from .metaclass import PluginMetaClass
 
 from random import choice
@@ -10,15 +13,19 @@ flickr.API_KEY = API_KEY
 flickr.API_SECRET = API_SECRET
 
 
-class TauntSeanPlugin(object):
+class UserResponse(object):
+    """
+	TODO: consider not making classes but just register the users
+	and their response methods
+	"""
     __metaclass__ = PluginMetaClass
 
-    name = "Taunt Sean plugin"
+    name = "User response" 
 
     # TODO: Not sure this is properly done (see metaclass)
     def __init__(self, bot_instance):
         self.bot_instance = bot_instance
-        self.taunter_name = 'seanz'
+        self.taunter_name = 'estherbester'
 
     @classmethod
     def run(cls, user, channel, message, bot_instance):
@@ -26,21 +33,17 @@ class TauntSeanPlugin(object):
         self = cls(bot_instance)
 
         # if sean is asking
-        if self._from_taunter_to_bot(user, message):
+        if self._is_from_user_to_bot(user, message):
             self.bot_instance.handled = True
             self._run(user, channel, message)
 
-    def _from_taunter_to_bot(self, user, message):
+    def _is_from_user_to_bot(self, user, message):
         return user.startswith(self.taunter_name) and message.startswith(self.bot_instance.nickname)
 
     def _run(self, user, channel, message):
-        # pick a random image
-        url = "http://www.aston-pharma.com/bionic-animals/images/12-bionic-animals/kvcgj7E.jpg"
-        self.bot_instance.msg(channel, "%s: is this what you wanted? %s" % (self.taunter_name, url))
+        pass
 
-
-
-class TauntAlbertPlugin(TauntSeanPlugin):
+class AlbertResponse(UserResponse):
     __metaclass__ = PluginMetaClass
 
     name = "Taunt Albert plugin"
@@ -84,12 +87,28 @@ class TauntAlbertPlugin(TauntSeanPlugin):
             if psize.label == size:
                 return psize.source
 
+class SeanzResponse(UserResponse):
+    name = "Taunt Sean plugin"
+	
+    # TODO: Not sure this is properly done (see metaclass)
+    def __init__(self, bot_instance):
+        self.bot_instance = bot_instance
+        self.taunter_name = 'seanz'
+
+    def _run(self, user, channel, message):
+        # pick a random image
+        url = "http://www.aston-pharma.com/bionic-animals/images/12-bionic-animals/kvcgj7E.jpg"
+        print url
+        self.bot_instance.msg(channel, "%s: is this what you wanted? %s" % (self.taunter_name, url))
+
+
+
 if __name__=="__main__":
     from mock import Mock
     bot_instance = Mock()
     try:
-        bot_instance.msg = Mock(return_value='foo')
-        sean_instance = TauntSeanPlugin.run('foo', 'bar', 'message', bot_instance)
-        f = TauntAlbertPlugin.run('foo', 'bar', 'message', bot_instance)
+        bot_instance.msg = Mock() 
+        SeanzResponse.run('foo', 'bar', 'message', bot_instance)
+        AlbertResponse.run('foo', 'bar', 'message', bot_instance)
     except Exception as error:
         print error

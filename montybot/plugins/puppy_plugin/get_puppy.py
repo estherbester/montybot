@@ -28,6 +28,12 @@ flickr.API_SECRET = API_SECRET
 
 
 class PuppyFetch(object):
+    """
+	TODO: 
+
+	* make fewer API calls
+	* Rename since we don't just get puppies
+	"""
     reply_string = "{prefix}: {msg}"
 
     throttler = Throttler('flickr', MAX_API_CALLS)
@@ -83,12 +89,21 @@ class PuppyFetch(object):
         method = 'flickr.photos.getSizes'
         data = flickr._doget(method, photo_id=photo.id)
         return self._get_resized(data, size)
-        raise flickr.FlickrError, "No URL found"
 
     def _get_resized(self, data, size):
         for psize in data.rsp.sizes.size:
             if psize.label == size:
                 return psize.source
+        raise flickr.FlickrError, "No URL found"
+
+class FlickrRandomizer(object):
+    """
+	Given a group of flickr photos, pick a random one.
+	* A group could be a set, a user, or a group
+	"""
+	def __init__(self, collection):
+	    self.collection = collection
+
 
 
 if __name__ == '__main__':

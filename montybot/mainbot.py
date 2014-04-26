@@ -1,72 +1,8 @@
-import re
 
 from twisted.words.protocols import irc
 from twisted.internet import task
 from twisted.internet import protocol
-
-from unknown_replies import smartass_reply
-
-
-class Message(object):
-    """
-	A message comes from a user and is sent to a channel.
-	The MainBot instance handles the message.
-	"""
-    def __init__(self, user, channel, message, bot_instance):
-        self.user = user
-        self.channel = channel
-        self.message= message
-        self.bot_instance = bot_instance
-
-    def handle(self):
-        self.bot_instance.handled = False
-        self._handle()
-
-    def _handle(self):
-	    """
-		Run through the various plugins for a given message.
-		"""
-        if self.bot_instance.factory.taunt_plugins:
-            self._taunt()
-        if self._is_command() and not self.bot_instance.handled:
-            command = self._get_msg_content()
-            self._match_command()
-        else:
-            for plugin in self.bot_instance.factory.message_plugins:
-                plugin.run(self.user, self.channel, self.message, self.bot_instance)
-
-    def _get_msg_content(self):
-        """ return the message content only.
-        """
-        message = self.message.strip()
-        return re.compile(self.bot_instance.nickname + "[:,]* ?", re.I).sub('', msg)
-
-    def _is_command(self):
-        return self.message.startswith(self.bot_instance.nickname)
-
-    def _match_command(self):
-        """
-        Call the command that matches anything in our command dict.
-        If no matches, return a smartass reply.
-        """
-        commands = [func for command, func in self.bot_instance.commands.items() \
-            if self._msg_contains_cmd(command)]
-
-        # if nothing available, send a smartass reply
-        if len(commands) > 0:
-           commands[0].__call__(self.user, self.channel)
-        else:
-            self.bot_instance.message(self.channel, smartass_reply())
-
-    def _msg_contains_cmd(self, cmd):
-        """ Scrub the message """
-        msg = self.msg.lower()
-        cmd = cmd.lower()
-        return cmd in msg
-
-    def _taunt(self):
-        for plugin in self.bot_instance.factory.taunt_plugins:
-            plugin.run(self.user, self.channel, self.msg, self.bot_instance)
+from .message import Message
 
 
 class MainBot(irc.IRCClient):
@@ -81,7 +17,7 @@ class MainBot(irc.IRCClient):
         return self.factory.nickname
 
     @property
-    def password(self0:
+    def password(self):
 	    return self.factory.password
 
     def ghost(self):
