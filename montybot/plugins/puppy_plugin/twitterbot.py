@@ -1,6 +1,4 @@
 
-import requests
-
 import tweepy
 from tweepy.error import TweepError
 
@@ -9,10 +7,10 @@ from .secret_settings import TWITTER_SECRET
 from .secret_settings import TWITTER_ACCESS_TOKEN
 from .secret_settings import TWITTER_ACCESS_SECRET
 
+
 class TwitterBot(object):
     """ singleton class that tweets stuff """
     tbot_instance = None
-     
 
     def __init__(self):
         self.api = None
@@ -26,7 +24,7 @@ class TwitterBot(object):
             # TODO: create methods to fetch these in case we don't have direct access
             auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
         except (NameError, TweepError) as error:
-            TWEET_RESULT = false
+            TWEET_RESULT = False
             print "Could not authenticate: %s. Not tweeting" % (error,)
         else:
             self.api = tweepy.API(auth)
@@ -41,18 +39,18 @@ class TwitterBot(object):
             cls.tbot_instance = cls()
         return cls.tbot_instance
 
-    def _send_tweet(self, category, url):
+    def tweet(self, status_msg):
+        self._send_tweet(status_msg)
+
+    def _send_tweet(self, status_msg):
         """
         send the update.
         """
-        status_msg = "%s: %s " % (category, url)
         update = self.api.update_status(status_msg)
         print "Tweeted %s" % (update.text,)
 
-    def tweet(self, category,  photo):
-        """
-        Theory: you can construct a proper flickr link from the photo.
-        
+    def format_flickr_tweet(self, category, photo):
+        """        
         http://www.flickr.com/photos/smemon/5635400338/
         Constructing url by User ID and Photo ID will always work even if user name doesn't.
         :param category: bot category of photo retrieved
@@ -60,16 +58,22 @@ class TwitterBot(object):
         :param photo: The flickr Photo object. TODO: make more abstract?
         :type photo: flickr.Photo
         """
-        flickr_url_format = "http://www.flickr.com/photos/{user_id}/{photo_id}/"
+        FLICKR_URL_FORMAT = "http://www.flickr.com/photos/{user_id}/{photo_id}/"
 
-        url = flickr_url_format.format(user_id=photo.owner.id, photo_id=photo.id)
-        self._send_tweet(category, url)
+        url = FLICKR_URL_FORMAT.format(user_id=photo.owner.id, photo_id=photo.id)
+        return "%s: %s " % (category, url)
 
 
 def tweet_result(group, result):
+    """
+    TODO: make deferred 
+    """
     try:
         tbot = TwitterBot.get_instance()
-        tbot.tweet(group, result)
+
+        status_msg = tbot.format_flickr_tweet(group, result)
+        tbot.tweet(status_msg)
+
     except (TweepError, Exception) as error:
         print error
         raise
