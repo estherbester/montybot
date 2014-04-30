@@ -12,7 +12,6 @@ from plugins.link_log.link_log import LinkCheckLogPlugin
 from plugins.taunt_user import SeanzResponse 
 from plugins.taunt_user import AlbertResponse 
 
-
 def _tokenize_channels(raw_str):
     channels = raw_str.split(' ')
     return [str(channel).strip() for channel in channels]

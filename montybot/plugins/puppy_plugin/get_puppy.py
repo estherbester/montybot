@@ -7,12 +7,14 @@ import flickr
 
 from .secret_settings import API_KEY
 from .secret_settings import API_SECRET
+from .secret_settings import TWEET_RESULT
 
 from ..throttler import Throttler
 
 from ..plugin_config import AVAILABLE_COMMANDS
 from ..plugin_config import PHOTOS_PER_PAGE
 from ..plugin_config import MAX_API_CALLS
+
 
 # Need the NSID of whatever group you're pulling from
 GROUPS = {
@@ -36,6 +38,7 @@ class PuppyFetch(object):
     """
     reply_string = "{prefix}: {msg}"
 
+    # not going to throttle twitter since this should take care of both.
     throttler = Throttler('flickr', MAX_API_CALLS)
 
     def __init__(self, puppy_type):
@@ -45,16 +48,38 @@ class PuppyFetch(object):
     @classmethod
     @throttler.track
     def get(cls, puppy_type):
+        message = "Sorry, can't get an image =("
         try:
             command = cls(puppy_type)
             prefix = REPLIES[puppy_type]
-            result = command._get_url()
             print "fetching url"
-        except KeyError, flickr.FlickrError:
-            result = "Sorry, no puppy for you =("
-        return command.reply_string.format(prefix=prefix, msg=result)
+            result = command._get_flickr_photo()
+            photo_url = cls.get_photo_url(result)
+            message = command.reply_string.format(prefix=prefix, msg=photo_url)
+            # TODO: this should not be a blocking call.
+            if TWEET_RESULT:
+                from .twitterbot import tweet_result
+                tweet_result(puppy_type, result)
 
-    def _get_url(self):
+        except (NameError, KeyError, flickr.FlickrError) as error:
+            print error
+        return message
+
+    def _get_flickr_photo(self):
+        """ 
+        a flickr Photo object looks like this::
+
+            photo.id, 
+            owner=owner, 
+            title=title, 
+            ispublic=ispublic,
+            isfriend=isfriend, 
+            isfamily=isfamily, 
+            secret=secret, 
+            server=server
+
+        :returns: flickr.photo object 
+        """
         photo = None
         counter = 1
         while photo is None and counter < 3:
@@ -71,7 +96,7 @@ class PuppyFetch(object):
             # page of results
             print "Randomized fetching failed. Getting one from the front page"
             photo = self._select_random_photo(1, 100)
-        return self._get_photo_url(photo)
+        return photo
 
     def _select_random_page(self, per_page=PHOTOS_PER_PAGE):
         """ Pick a page, any page. """
@@ -85,7 +110,8 @@ class PuppyFetch(object):
                                       page=page_number)
         return choice(photos)
 
-    def _get_photo_url(self, photo):
+    @staticmethod
+    def get_photo_url(photo):
         """ 
         we default to medium as it works well most times; getLarge and 
         getSmall work too. 
