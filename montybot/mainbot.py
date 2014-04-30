@@ -93,7 +93,8 @@ class MainBotFactory(protocol.ClientFactory):
 
     protocol = MainBot
 
-    def __init__(self, channels,
+    def __init__(self, config_file, 
+                 channels,
                  command_plugins=[],
                  message_plugins=[],
                  taunt_plugins=[]
@@ -105,7 +106,7 @@ class MainBotFactory(protocol.ClientFactory):
             are not commands
         """
         #TODO: clean this up 
-        settings = self._read_config()['irc']
+        settings = self._read_config(config_file)['irc']
         self.channels = channels
         try:
             self.nickname = settings['nickname'] 
@@ -123,15 +124,14 @@ class MainBotFactory(protocol.ClientFactory):
     def clientConnectionFailed(self, connector, reason):
         print "Could not connect: %s" % (reason,)
 
-    def _read_config(self):
-        file_name = 'montybot/irc_credentials.txt'
+    def _read_config(self, config_file):
         config = SafeConfigParser()
-        config.read(file_name)
+        config.read(config_file)
         config_dict = {}
         for section in config.sections():
             config_dict[section] = dict(config.items(section))
         if not config_dict:
-            raise Exception("No configs were loaded from %s" % file_name)
+            raise Exception("No configs were loaded from %s" % config_file)
         return config_dict
 
 

@@ -17,16 +17,24 @@ def _tokenize_channels(raw_str):
     channels = raw_str.split(' ')
     return [str(channel).strip() for channel in channels]
 
+def _print_instr():
+    print """
+    To run this, you need to provide the path to the 
+    config file (like irc_credentials.ini). You must 
+    also indicate channels, separated by spaces in a 
+    single quoted string.
+
+    Example: 
+    $ python event.py irc_credentials.ini '#channel1 #channel2'
+    """ 
 
 if __name__ == "__main__":
-    """ TODO: config should be read here? """ 
     
     try:
-        channel_string = sys.argv[1]
+        me, config_file, channel_string = sys.argv
         channels = _tokenize_channels(channel_string)
-    except IndexError:
-        print "Must indicate channels, separated by spaces in a \
-            single quoted string: '#channel1 #channel2'"
+    except (ValueError, IndexError) as error:
+        _print_instr()
     else:
         command_plugins = [PuppyCommandPlugin, CreativeQuitPlugin]       
         taunt_plugins = [AlbertResponse, SeanzResponse]
@@ -34,7 +42,8 @@ if __name__ == "__main__":
 
         reactor.connectTCP('irc.freenode.net',
                             6667,
-                            MainBotFactory(channels,
+                            MainBotFactory(config_file, 
+                                           channels,
                                            command_plugins,
                                            message_plugins,
                                            taunt_plugins,

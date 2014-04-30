@@ -51,7 +51,7 @@ class Message(object):
         """ return the message content only.
         """
         message = self.message.strip()
-        return re.compile(self.bot_instance.nickname + "[:,]* ?", re.I).sub('', msg)
+        return re.compile(self.bot_instance.nickname + "[:,]* ?", re.I).sub('', message)
 
     def _match_command(self):
         """

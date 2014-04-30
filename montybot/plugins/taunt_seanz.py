@@ -32,7 +32,7 @@ class UserResponse(object):
         """ """
         self = cls(bot_instance)
 
-        # if sean is asking
+        # if the targeted user is the sender
         if self._is_from_user_to_bot(user, message):
             self.bot_instance.handled = True
             self._run(user, channel, message)
@@ -41,6 +41,7 @@ class UserResponse(object):
         return user.startswith(self.taunter_name) and message.startswith(self.bot_instance.nickname)
 
     def _run(self, user, channel, message):
+        """ abstract method """
         pass
 
 class AlbertResponse(UserResponse):
@@ -90,7 +91,6 @@ class AlbertResponse(UserResponse):
 class SeanzResponse(UserResponse):
     name = "Taunt Sean plugin"
 	
-    # TODO: Not sure this is properly done (see metaclass)
     def __init__(self, bot_instance):
         self.bot_instance = bot_instance
         self.taunter_name = 'seanz'
