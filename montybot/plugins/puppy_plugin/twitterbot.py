@@ -6,7 +6,8 @@ from tweepy.error import TweepError
 
 from .secret_settings import TWITTER_KEY
 from .secret_settings import TWITTER_SECRET
-from .secret_settings import TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET
+from .secret_settings import TWITTER_ACCESS_TOKEN
+from .secret_settings import TWITTER_ACCESS_SECRET
 
 class TwitterBot(object):
     """ singleton class that tweets stuff """
@@ -22,8 +23,9 @@ class TwitterBot(object):
         try:
 
             auth = tweepy.OAuthHandler(TWITTER_KEY, TWITTER_SECRET)
+            # TODO: create methods to fetch these in case we don't have direct access
             auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
-        except TweepError as error:
+        except (NameError, TweepError) as error:
             TWEET_RESULT = false
             print "Could not authenticate: %s. Not tweeting" % (error,)
         else:
