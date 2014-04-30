@@ -61,7 +61,7 @@ class TwitterBot(object):
         FLICKR_URL_FORMAT = "http://www.flickr.com/photos/{user_id}/{photo_id}/"
 
         url = FLICKR_URL_FORMAT.format(user_id=photo.owner.id, photo_id=photo.id)
-        return "%s: %s " % (category, url)
+        return "Fetched a %s: %s " % (category, url)
 
 
 def tweet_result(group, result):
