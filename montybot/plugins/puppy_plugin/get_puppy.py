@@ -85,16 +85,16 @@ class PuppyFetch(object):
                                       page=page_number)
         return choice(photos)
 
-    def _get_photo_url(self, photo, size="Medium"):
-        method = 'flickr.photos.getSizes'
-        data = flickr._doget(method, photo_id=photo.id)
-        return self._get_resized(data, size)
-
-    def _get_resized(self, data, size):
-        for psize in data.rsp.sizes.size:
-            if psize.label == size:
-                return psize.source
+    def _get_photo_url(self, photo):
+        """ 
+        we default to medium as it works well most times; getLarge and 
+        getSmall work too. 
+        """
+        url = photo.getMedium()
+        if url:
+            return url
         raise flickr.FlickrError, "No URL found"
+        
 
 class FlickrRandomizer(object):
     """
