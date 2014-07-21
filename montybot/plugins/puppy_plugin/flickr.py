@@ -30,7 +30,7 @@ from xml.dom import minidom
 import hashlib
 import os
 
-HOST = 'http://flickr.com'
+HOST = 'https://flickr.com'
 API = '/services/rest'
 
 # set these here or using flickr.API_KEY in your application
@@ -1431,7 +1431,7 @@ class Auth():
         sig_str = API_SECRET + 'api_key' + API_KEY + 'frob' + frob + 'perms' + permission
         signature_hash = hashlib.md5(sig_str).hexdigest()
         perms = permission
-        link = "http://flickr.com/services/auth/?api_key=%s&perms=%s&frob=%s&api_sig=%s" % (API_KEY, perms, frob, signature_hash)
+        link = "https://flickr.com/services/auth/?api_key=%s&perms=%s&frob=%s&api_sig=%s" % (API_KEY, perms, frob, signature_hash)
         return link
 
     def getToken(self, frob):
