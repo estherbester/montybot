@@ -13,7 +13,7 @@ class Link(object):
     # (or at least the head tag), a formatted string description, and timestamp
     url = None
     content = None
-    message_format = "{url} {delim} {note}"
+    message_format = "{url}{delim} {note}"
 
     def __init__(self, url):
         """
@@ -50,7 +50,7 @@ class Link(object):
     @property
     def text(self):
         """ Create a pretty string for the link. """
-        return self.message_format.format(url="^^^ Link", #url=self.url,
+        return self.message_format.format(url="^", #url=self.url,
                                           delim=':',
                                           note=self.page_title)
 
