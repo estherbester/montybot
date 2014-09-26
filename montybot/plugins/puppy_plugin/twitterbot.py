@@ -63,6 +63,8 @@ class TwitterBot(object):
         url = FLICKR_URL_FORMAT.format(user_id=photo.owner.id, photo_id=photo.id)
         return "Fetched a %s: %s " % (category, url)
 
+class TweetBotError(Exception):
+    pass
 
 def tweet_result(group, result):
     """
@@ -75,8 +77,8 @@ def tweet_result(group, result):
         tbot.tweet(status_msg)
 
     except (TweepError, Exception) as error:
-        print error
-        raise
+        print "Tweet Error: %s" % error
+        raise TweetBotError(error)
 
 if __name__ == "__main__":
     from mock import Mock

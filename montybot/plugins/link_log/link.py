@@ -51,7 +51,7 @@ class Link(object):
     def text(self):
         """ Create a pretty string for the link. """
         return self.message_format.format(url="^", #url=self.url,
-                                          delim=':',
+                                          delim='',
                                           note=self.page_title)
 
     @property

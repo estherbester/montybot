@@ -10,7 +10,6 @@ from .secret_settings import API_SECRET
 from .secret_settings import TWEET_RESULT
 
 from ..throttler import Throttler
-
 from ..plugin_config import AVAILABLE_COMMANDS
 from ..plugin_config import PHOTOS_PER_PAGE
 from ..plugin_config import MAX_API_CALLS
@@ -56,13 +55,16 @@ class PuppyFetch(object):
             result = command._get_flickr_photo()
             photo_url = cls.get_photo_url(result)
             message = command.reply_string.format(prefix=prefix, msg=photo_url)
+        except (NameError, KeyError, flickr.FlickrError) as error:
+            print "Error in PuppyFetch: %s" % error
+        else:
             # TODO: this should not be a blocking call.
             if TWEET_RESULT:
-                from .twitterbot import tweet_result
-                tweet_result(puppy_type, result)
-
-        except (NameError, KeyError, flickr.FlickrError) as error:
-            print error
+                from .twitterbot import tweet_result, TweetBotError
+                try:
+                    tweet_result(puppy_type, result)
+                except TweetBotError as error:
+                    print "Tweetbot error: %s" % error
         return message
 
     def _get_flickr_photo(self):
