@@ -14,6 +14,8 @@ HOW TO USE
 REQUIREMENTS
 ============
 
+* headers (``apt-get install python-dev``)
+
 * Twisted and its dependencies
 * flickrpy
 * python-requests
