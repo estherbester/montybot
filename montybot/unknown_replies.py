@@ -11,6 +11,14 @@ SMARTASS_REPLY_LIST = [
     "Ain't nobody got time for dat! %s" % video
 ]
 
+GREEDY_REPLY_LIST = [
+    "You're being greedy.",
+    "Someone wants too much.",
+    "No more than 3 things, please!",
+]
+
+def greedy_reply():
+    return random.choice(GREEDY_REPLY_LIST)
 
 def smartass_reply():
     return random.choice(SMARTASS_REPLY_LIST)

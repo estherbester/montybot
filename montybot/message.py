@@ -1,8 +1,12 @@
 import re
 
 from unknown_replies import smartass_reply
+from unknown_replies import greedy_reply
 
 class Message(object):
+
+    MAX_COMMANDS = 3
+
     """
     A message comes from a user and is sent to a channel.
     The MainBot instance handles the message.
@@ -63,7 +67,11 @@ class Message(object):
 
         # if nothing available, send a smartass reply
         if len(commands) > 0:
-           commands[0].__call__(self.user, self.channel)
+            if len(commands) <= self.MAX_COMMANDS:
+                for cmd in commands:
+                    cmd.__call__(self.user, self.channel)
+            else:
+                self.bot_instance.msg(self.channel, greedy_reply())
         else:
             self.bot_instance.msg(self.channel, smartass_reply())
 
