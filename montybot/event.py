@@ -11,6 +11,7 @@ from plugins.puppy_plugin.puppy_plugin import PuppyCommandPlugin
 from plugins.link_log.link_log import LinkCheckLogPlugin
 from plugins.taunt_user import SeanzResponse 
 from plugins.taunt_user import AlbertResponse 
+from plugins.squirrel.squirrel import DisruptiveSquirrelPlugin
 
 def _tokenize_channels(raw_str):
     channels = raw_str.split(' ')
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     else:
         command_plugins = [PuppyCommandPlugin, CreativeQuitPlugin]       
         taunt_plugins = [SeanzResponse]
-        message_plugins = [LinkCheckLogPlugin]
+        message_plugins = [LinkCheckLogPlugin, DisruptiveSquirrelPlugin]
 
         reactor.connectTCP('irc.freenode.net',
                             6667,
