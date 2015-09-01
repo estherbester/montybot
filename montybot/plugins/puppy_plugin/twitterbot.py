@@ -24,7 +24,7 @@ class TwitterBot(object):
             # TODO: create methods to fetch these in case we don't have direct access
             auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
         except (NameError, TweepError) as error:
-            TWEET_RESULT = False
+            #TWEET_RESULT = False
             print "Could not authenticate: %s. Not tweeting" % (error,)
         else:
             self.api = tweepy.API(auth)

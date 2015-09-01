@@ -1,0 +1,47 @@
+[slack]
+token = <bot APItoken>
+slackbot_id = <bot user id>
+allow_dm = <to allow users to DM the bot [not yet implemeneted]>
+no_roam = <bot can only talk to specified channels>
+allowed_channels = <channels if no_roam is true>
+
+[flickr]
+key = <flickr api key>
+secret = <flickr api secret>
+
+[twitterbot]
+tweet_fetches = <False>
+
+[puppyplugin]
+photos_per_page = 20
+max_api_calls = 60
+
+	[[groups]]
+	# the last item is text that you can prepend to the slackbot's reply containing the message
+	aibo = aibo, 'aibo', '51035597776@N01', ''
+	beagle = beagle, 'beagle', '93217210@N00', ''
+	bigdog = bigdog, 'big dog', '358732@N20', ''
+	bulldog = bulldog, 'frenchie!', '50881036@N00', ''
+	bunny = bunny, 'bunny', '480083@N22', 'Silly '
+	chicken = chicken, 'chicken', '16442223@N00', ''
+	cocktail = cocktail, 'fetch me a drink', '57434090@N00', ''
+	corgi = corgi, 'corgi', '42653350@N00', ''
+	donut = donut, 'hungry', '388345@N24', ''
+	doxy = doxy, 'hotdog', '52240151476@N01', ''
+	generic = puppy, 'puppy lottery', '35034344814@N01', ''
+	golden = golden, 'golden', '36618758@N00', ''
+	husky = husky, 'husky', '81839844@N00', ''
+	iguana = iguana, 'iguana', '14757429@N00', ''
+	kings = LAKings photo', 'go kings', '442911@N21', ''
+	kitten = kitten, 'meow meow', '52185806@N00', ''
+	panda = panda, 'panda', '518319@N22', ''
+	poodle = poodlemix, 'poodle', '1884736@N25', ''
+	pug = pug, 'pug', '57017533@N00', ''
+	pyr = pyrenees, 'pyr', '667639@N24', ''
+	samoyed = samoyed, 'samoyed', '922784@N21', ''
+	shiba = shiba, 'shiba', '485910@N25', 'such doge'
+	shihtzu = shihtzu, 'shihtzu', '30751387@N00', ''
+	vintage_motorcycles = motorcyle, 'vroom', '978661@N20', ''
+	westie = westie, 'westie', '93716354@N00', ''
+	wombat = wombat, 'wombat', '38109305@N00', ''
+

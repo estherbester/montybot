@@ -2,4 +2,5 @@ secret_settings.py
 links_in_channel.txt
 plugin_config.py
 irc_credentials.txt
+slack.conf
 *pyc
