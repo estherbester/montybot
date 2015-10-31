@@ -12,8 +12,8 @@ GENERIC = PuppyCommand('puppy', 'puppy lottery', '35034344814@N01', "Puppy lotte
 PUG = PuppyCommand('pug', 'pug please', '57017533@N00', "Pug for you")
 CORGI = PuppyCommand('corgi', 'corgi time', '42653350@N00', "OMG corgi!")
 DOXY = PuppyCommand('doxy', 'hotdog', '52240151476@N01', "Dachshund time")
-
-AVAILABLE_COMMANDS = [GENERIC, PUG, CORGI, DOXY]
+CANADIENS = PuppyCommand('habs', 'habs', '47018362@N00', 'Go Habs Go!')
+AVAILABLE_COMMANDS = [GENERIC, PUG, CORGI, DOXY, CANADIENS]
 
 PHOTOS_PER_PAGE = 20
 MAX_API_CALLS = 60
