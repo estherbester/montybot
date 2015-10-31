@@ -24,11 +24,13 @@ REQUIREMENTS
 * `python-requests <http://docs.python-requests.org/en/latest/>`_
 * `BeautifulSoup <http://www.crummy.com/software/BeautifulSoup/>`_
 
-For PuppyBot::
+For PuppyBot
+
     * flickrpy (included here as flickr.py because I patched it slightly; source https://code.google.com/p/flickrpy/)
     * flickr API key (store in secret_settings.py as API_KEY and API_SECRET; see SAMPLE file included here)
 
-For Link log::
+For Link log
+
     * python-requests [python-requests.org]
     * BeautifulSoup
     * Create an empty text file, called 'links_in_channel.txt', in the same directory as the app.
