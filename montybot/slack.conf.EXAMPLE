@@ -1,6 +1,7 @@
 [slack]
 token = <bot APItoken>
 slackbot_id = <bot user id>
+friendly_name=puppybot
 allow_dm = <to allow users to DM the bot [not yet implemeneted]>
 no_roam = <bot can only talk to specified channels>
 allowed_channels = <channels if no_roam is true>

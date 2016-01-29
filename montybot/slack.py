@@ -1,4 +1,6 @@
 import json
+import os
+
 from mock import Mock
 from ConfigParser import SafeConfigParser
 
@@ -8,10 +10,12 @@ from message import Message
 from plugins.creative_quit import CreativeQuitPlugin
 from plugins.puppy_plugin.puppy_plugin import PuppyCommandPlugin
 
+# TODO: add base dir
 CONFIG_FILE = 'slack.conf'
 
 MESSAGE_CHANGED = u'message_changed'
 
+DEBUG = True
 
 class SlackBot(object):
     handled = False   
@@ -23,7 +27,8 @@ class SlackBot(object):
                             taunt_plugins=[],
                             command_plugins=plugins)
         self.slack =  SlackClient(self.settings.get('token', ''))
-        self.nickname = self.settings.get('slackbot_id')
+        self.slackbot_id = self.settings.get('slackbot_id')
+        self.nickname = self.settings.get('friendly_name')
         self._add_plugins(plugins)
 
     def _add_plugins(self, plugins):
@@ -48,11 +53,14 @@ class SlackBot(object):
     # channel = channel from read message
     def handle(self, message):
         # TODO: handle direct messages?
-        #print message
-        #print '*'*160
+        if DEBUG:
+            print message
+            print '*'*80
+
         try:
             message = self._ensure_valid_message(message)
         except KeyError as e:
+            print 'Key error: ', e
             return 
         if self._is_valid_command(message): 
             try:
@@ -76,12 +84,17 @@ class SlackBot(object):
         return message
 
     def _is_valid_command(self, message):
-        if self.nickname in message.get(u'user', ''):
+        # don't reply to its own messages in the channel
+        if self.slackbot_id in message.get(u'user', ''):
             return False
         if self.settings.get('no_roam', True) and \
             message.get(u'channel', '') not in self.settings.get('allowed_channels', []):
             return False
-        return self.nickname in message.get(u'text', '')
+        return self._bot_was_called(message)
+ 
+    def _bot_was_called(self, message):
+        msg_text = message.get(u'text', '')
+        return self.slackbot_id in msg_text or msg_text.startswith(self.nickname)
 
 
 def read_config(config_file):
