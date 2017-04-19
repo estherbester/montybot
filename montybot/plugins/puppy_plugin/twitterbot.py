@@ -7,6 +7,15 @@ from .secret_settings import TWITTER_SECRET
 from .secret_settings import TWITTER_ACCESS_TOKEN
 from .secret_settings import TWITTER_ACCESS_SECRET
 
+VOWELS = 'aieouAIEOU'
+
+
+def starts_with_vowel(word):
+    for vowel in VOWELS:
+        if word.startswith(vowel):
+            return True
+    return False
+
 
 class TwitterBot(object):
     """ singleton class that tweets stuff """
@@ -49,6 +58,10 @@ class TwitterBot(object):
         update = self.api.update_status(status_msg)
         print "Tweeted %s" % (update.text,)
 
+    def _get_caption(self, category, url):
+        article = 'an' if starts_with_vowel(category) else 'a'
+        return "Fetched %s %s: %s " % (article, category, url)
+
     def format_flickr_tweet(self, category, photo):
         """        
         http://www.flickr.com/photos/smemon/5635400338/
@@ -57,11 +70,12 @@ class TwitterBot(object):
         :type category: String
         :param photo: The flickr Photo object. TODO: make more abstract?
         :type photo: flickr.Photo
+        :rtype: string
         """
         FLICKR_URL_FORMAT = "http://www.flickr.com/photos/{user_id}/{photo_id}/"
-
         url = FLICKR_URL_FORMAT.format(user_id=photo.owner.id, photo_id=photo.id)
-        return "Fetched a %s: %s " % (category, url)
+        return self._get_caption(category, url)
+
 
 class TweetBotError(Exception):
     pass
